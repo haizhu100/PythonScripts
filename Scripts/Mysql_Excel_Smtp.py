@@ -163,7 +163,7 @@ if __name__ == '__main__':
     # 初始化类
     cp = ConfigParser()
     # 如果配置里有中文的话，需要添加encoding="utf-8-sig"
-    cp.read("./config.cfg", encoding="utf-8-sig")
+    cp.read("../config/config_mysql_excel_smtp.cfg", encoding="utf-8-sig")
 
     # 得到所有的section，以列表的形式返回
     section = cp.sections()

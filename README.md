@@ -1,2 +1,5 @@
 # PythonScripts
 主要放置一些python的脚本
+Module文件夹里定义了一些自己写的模块
+config文件夹放置了脚本对应的的配置文件
+Scripts文件夹里放置了特殊功能的脚本
