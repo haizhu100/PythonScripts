@@ -1,5 +1,8 @@
 #!/usr/bin/python
 #_*_ coding: UTF-8 _*_
+"""
+这个脚本含有的功能是从mysql数据库读取数据，然后存到excel，然后将该excel作为附件发送邮件
+"""
 import pymysql
 import time
 import xlwt
