@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #_*_ coding: UTF-8 _*_
 """
-这个脚本含有的功能是从mysql数据库读取数据，然后存到excel，然后将该excel作为附件发送邮件
+该脚本功能包括从mysql数据库获取数据，然后将数据存到excel，最后作为附件发送邮件！数据库信息和邮件信息从配置库里读取
 """
+
 import pymysql
 import time
 import xlwt
@@ -44,7 +45,7 @@ def get_data_from_mysql(mysqldb_dict):
     connect.close()
     return results
 
-def write_excel(output_path,results):
+def write_excel(outputfilepath, outputfilename ,results):
     f = xlwt.Workbook() # 创建工作簿
     sheet1 = f.add_sheet(u'sheet1',cell_overwrite_ok = True)  # 创建sheet
     row0 = [u'主键',u'应用编号',u'上传人',u'工号',u'设备编号',u'经度',u'纬度',u'网格ID',u'grid_name',u'sgin_des',u'picture_url',u'签到时间',u'签到类型',u'运营商']
@@ -80,7 +81,7 @@ def write_excel(output_path,results):
                 continue
             sheet1.write(j, k, row[k], style1)
         j = j+1
-
+    output_path = outputfilepath + outputfilename
     f.save(output_path)
     print('数据保存到excel成功')
 
@@ -110,7 +111,7 @@ def set_style(font_name, font_height, bold=False):
     return style
 
 # 发送带附件的邮件
-def send_email(file,email_dict):
+def send_email(outputfilepath, outputfilename ,email_dict):
     # 添加附件邮件实例
     message = MIMEMultipart()
     # 第三方 SMTP 服务
@@ -131,10 +132,11 @@ def send_email(file,email_dict):
     message['Subject'] = subject
     # 添加邮件正文
     message.attach(MIMEText(content, 'plain', 'utf-8'))
+    file = outputfilepath + outputfilename
     # 添加附件
     excelApart = MIMEApplication(open(file, 'rb').read())
     # 邮件里呈现的文件名要去除路径
-    excelApart.add_header('Content-Disposition', 'attachment', filename=file.split('/')[1])
+    excelApart.add_header('Content-Disposition', 'attachment', filename=outputfilename)
     message.attach(excelApart)
 
     try:
@@ -163,7 +165,7 @@ if __name__ == '__main__':
     # 初始化类
     cp = ConfigParser()
     # 如果配置里有中文的话，需要添加encoding="utf-8-sig"
-    cp.read("../config/config_mysql_excel_smtp.cfg", encoding="utf-8-sig")
+    cp.read("./config.cfg", encoding="utf-8-sig")
 
     # 得到所有的section，以列表的形式返回
     section = cp.sections()
@@ -176,8 +178,10 @@ if __name__ == '__main__':
                             'passwd': cp.get(section, "passwd"),'charset': cp.get(section, "charset")}
             # print(mysqldb_dict)
         if section == 'excel':
-            file = cp.get(section, "filepath") + cp.get(section, "filename")
-            # print(file)
+            file_dict = {
+                'outputfilepath': cp.get(section, "filepath"),
+                'outputfilename': cp.get(section, "filename")
+            }
         if section == 'email':
             email_dict = {'mailhost': cp.get(section, "mailhost"), 'fromaddr': cp.get(section, "fromaddr"),
                           'password': cp.get(section, "password"), 'toaddrs': cp.get(section, "toaddrs"),
@@ -188,9 +192,11 @@ if __name__ == '__main__':
     results = get_data_from_mysql(mysqldb_dict)
    # 获取当前时间
     nowtime = time.time()
+    # 定义输出文件路径
+    outputfilepath = file_dict['outputfilepath']
     # 定义输出文件名
-    outputfile = file + str(nowtime) + '.xls'
+    outputfilename = file_dict['outputfilename'] + str(nowtime) + '.xls'
    # 写数据的数据到excel文件
-    write_excel(outputfile, results)
+    write_excel(outputfilepath, outputfilename , results)
    # 将excel文件作为附件发送邮件
-    send_email(outputfile,email_dict)
+    send_email(outputfilepath, outputfilename ,email_dict)
