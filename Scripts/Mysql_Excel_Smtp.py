@@ -165,7 +165,7 @@ if __name__ == '__main__':
     # 初始化类
     cp = ConfigParser()
     # 如果配置里有中文的话，需要添加encoding="utf-8-sig"
-    cp.read("./config.cfg", encoding="utf-8-sig")
+    cp.read("../config/config_mysql_excel_smtp.cfg", encoding="utf-8-sig")
 
     # 得到所有的section，以列表的形式返回
     section = cp.sections()
@@ -173,9 +173,12 @@ if __name__ == '__main__':
     for section in cp.sections():
         # print(section)
         if section == 'mysql_db':
-            mysqldb_dict = {'host': cp.get(section, "host"), 'port': cp.getint(section, "port"),
-                            'db': cp.get(section,"db"),'user': cp.get(section, "user"),
-                            'passwd': cp.get(section, "passwd"),'charset': cp.get(section, "charset")}
+            mysqldb_dict = {'host': cp.get(section, "host"),
+                            'port': cp.getint(section, "port"),
+                            'db': cp.get(section,"db"),
+                            'user': cp.get(section, "user"),
+                            'passwd': cp.get(section, "passwd"),
+                            'charset': cp.get(section, "charset")}
             # print(mysqldb_dict)
         if section == 'excel':
             file_dict = {
@@ -184,12 +187,19 @@ if __name__ == '__main__':
             }
         if section == 'email':
             if 'ccaddrs' in cp.options(section):
-                email_dict = {'mailhost': cp.get(section, "mailhost"), 'fromaddr': cp.get(section, "fromaddr"),
-                              'password': cp.get(section, "password"), 'toaddrs': cp.get(section, "toaddrs"),
-                              'ccaddrs': cp.get(section, "ccaddrs"), 'content': cp.get(section, "content")}
+                email_dict = {'mailhost': cp.get(section, "mailhost"),
+                              'fromaddr': cp.get(section, "fromaddr"),
+                              'password': cp.get(section, "password"),
+                              'toaddrs': cp.get(section, "toaddrs"),
+                              'ccaddrs': cp.get(section, "ccaddrs"),
+                              'subject': cp.get(section, "subject"),
+                              'content': cp.get(section, "content")}
             else:
-                email_dict = {'mailhost': cp.get(section, "mailhost"), 'fromaddr': cp.get(section, "fromaddr"),
-                              'password': cp.get(section, "password"), 'toaddrs': cp.get(section, "toaddrs"),
+                email_dict = {'mailhost': cp.get(section, "mailhost"),
+                              'fromaddr': cp.get(section, "fromaddr"),
+                              'password': cp.get(section, "password"),
+                              'toaddrs': cp.get(section, "toaddrs"),
+                              'subject': cp.get(section, "subject"),
                               'content': cp.get(section, "content")}
 
    # 从数据库获取数据
