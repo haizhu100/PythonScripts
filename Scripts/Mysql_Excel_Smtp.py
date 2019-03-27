@@ -126,7 +126,7 @@ def send_email(outputfilepath, outputfilename ,email_dict):
     if 'ccaddrs' in email_dict:
         ccaddrs = email_dict['ccaddrs'].split(",")
         message['Cc'] = ";".join(ccaddrs)
-        print("抄送人：" + message['To'])
+        print("抄送人：" + message['Cc'])
     subject = email_dict['subject']
     content = email_dict['content']
     message['Subject'] = subject
