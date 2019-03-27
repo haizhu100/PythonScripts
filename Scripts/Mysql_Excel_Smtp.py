@@ -183,10 +183,14 @@ if __name__ == '__main__':
                 'outputfilename': cp.get(section, "filename")
             }
         if section == 'email':
-            email_dict = {'mailhost': cp.get(section, "mailhost"), 'fromaddr': cp.get(section, "fromaddr"),
-                          'password': cp.get(section, "password"), 'toaddrs': cp.get(section, "toaddrs"),
-                          'subject': cp.get(section, "subject"),'content': cp.get(section, "content")}
-            # print(email_dict)
+            if 'ccaddrs' in cp.options(section):
+                email_dict = {'mailhost': cp.get(section, "mailhost"), 'fromaddr': cp.get(section, "fromaddr"),
+                              'password': cp.get(section, "password"), 'toaddrs': cp.get(section, "toaddrs"),
+                              'ccaddrs': cp.get(section, "ccaddrs"), 'content': cp.get(section, "content")}
+            else:
+                email_dict = {'mailhost': cp.get(section, "mailhost"), 'fromaddr': cp.get(section, "fromaddr"),
+                              'password': cp.get(section, "password"), 'toaddrs': cp.get(section, "toaddrs"),
+                              'content': cp.get(section, "content")}
 
    # 从数据库获取数据
     results = get_data_from_mysql(mysqldb_dict)
